@@ -100,12 +100,6 @@ Game 99: 6 blue, 3 green, 5 red; 3 green, 6 red, 8 blue; 3 green, 11 blue, 14 re
 Game 100: 16 red, 3 blue; 2 red, 5 green; 9 red; 1 blue, 3 green, 10 red; 1 red, 5 blue, 3 green; 12 blue, 9 red'''
 
 # Conditions
-# data = [
-#     {"color": "red", "limit": 12},
-#     {"color": "green", "limit": 13},
-#     {"color": "blue", "limit": 14}
-# ]
-
 colors = {'red':12, 'green':13, 'blue':14}
 
 #returns true if fits conditions
@@ -125,3 +119,28 @@ def process_game(input):
         if int(colors[parts[1]]) < int(parts[0]) :
             return False
     return True
+
+def get_game_power(input):
+    maxColors = {'red':1, 'green':1, 'blue':1}
+    line = input.split(":")
+    games = line[1].split(";")
+    for game in games:
+        max = process_max(game)
+        maxColors = compare_max(maxColors, max) 
+    return maxColors['blue'] * maxColors['green'] * maxColors['red']
+    
+def process_max(input):
+    maxColors = {'red':1, 'green':1, 'blue':1}
+    balls = input.split(",")
+    for ball in balls:
+        parts = ball.strip().split(' ')
+        if maxColors[parts[1]] < int(parts[0]):
+           maxColors[parts[1]] = int(parts[0])
+    return maxColors
+
+def compare_max(oldMax, newMax):
+    maxColors = {'red':1, 'green':1, 'blue':1}
+    maxColors['red'] = oldMax['red'] if oldMax['red'] > newMax['red'] else newMax['red']
+    maxColors['green'] = oldMax['green'] if oldMax['green'] > newMax['green'] else newMax['green']
+    maxColors['blue'] = oldMax['blue'] if oldMax['blue'] > newMax['blue'] else newMax['blue']
+    return maxColors
