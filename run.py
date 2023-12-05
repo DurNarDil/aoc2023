@@ -1,9 +1,10 @@
 from variables import *
 
 lineList = input.split("\n")
+lineListLenght = len(lineList)
 digitSum = 0
 for index,line in enumerate(lineList):
-      digitSum += get_game_power(line)
+      process_string(line, lineList, index, lineListLenght)
     
-print(digitSum)
+print(sum_string_ints(numbers))
                 
