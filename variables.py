@@ -153,8 +153,9 @@ def process_string(line, lineList, lineIndex, lineListLenght):
             partNumber = ''
         if char.isdigit():
             partNumber = partNumber + char
-            if check_for_symbols(lineIndex, index, lineList, line, lineListLenght):
-                skipStep = get_whole_number(line, partNumber, index)
+            check = check_for_symbols(lineIndex, index, lineList, line, lineListLenght)
+            if check[0]:
+                skipStep = get_whole_number(line, partNumber, index, check[1])
                 partNumber = ''
             
 
@@ -165,37 +166,55 @@ def check_for_symbols(lineIndex, charIndex, lineList, line, lineListLenght):
     safeTop = lineIndex > 0
     safeBottom = lineListLenght - 1 > lineIndex
     safeForward = lineLenght != charIndex + 1
+    
+    starCoords = []
     # Safe to check behind
     if safeBehind:
         if is_symbol(line[charIndex - 1]):
-            return True
+            if is_star(lineList[lineIndex][charIndex - 1]):
+                starCoords = [lineIndex, charIndex -1]
+            return [True, starCoords]
     if safeBehind and safeTop:
         if is_symbol(lineList[lineIndex - 1][charIndex - 1]):
-            return True
+            if is_star(lineList[lineIndex - 1][charIndex - 1]):
+                starCoords = [lineIndex - 1 , charIndex -1]
+            return [True, starCoords]
     if safeBehind and safeBottom:
         if is_symbol(lineList[lineIndex + 1][charIndex - 1]):
-            return True
+            if is_star(lineList[lineIndex + 1][charIndex - 1]):
+                starCoords = [lineIndex + 1 , charIndex -1]
+            return [True, starCoords]
     
     # Safe to check forward
     if safeForward:
         if is_symbol(line[charIndex + 1]):
-            return True
+            if is_star(line[charIndex + 1]):
+                starCoords = [lineIndex, charIndex + 1]
+            return [True, starCoords]
     if safeForward and safeTop:
         if is_symbol(lineList[lineIndex - 1][charIndex + 1]):
-            return True
+            if is_star(lineList[lineIndex - 1][charIndex + 1]):
+                starCoords = [lineIndex - 1 , charIndex + 1]
+            return [True, starCoords]
     if safeForward and safeBottom:
         if is_symbol(lineList[lineIndex + 1][charIndex + 1]):
-            return True
+            if is_star(lineList[lineIndex + 1][charIndex + 1]):
+                starCoords = [lineIndex + 1 , charIndex +1]
+            return [True, starCoords]
     
     # Safe to check top and bottom
     if safeBottom:
         if is_symbol(lineList[lineIndex + 1][charIndex]):
-            return True
+            if is_star(lineList[lineIndex + 1][charIndex]):
+                starCoords = [lineIndex + 1 , charIndex]
+            return [True, starCoords]
     if safeTop:
         if is_symbol(lineList[lineIndex - 1][charIndex]):
-            return True
+            if is_star(lineList[lineIndex - 1][charIndex]):
+                starCoords = [lineIndex - 1 , charIndex]
+            return [True, starCoords]
 
-    return False
+    return [False, starCoords]
     
 # Check if char is symbol    
 def is_symbol(lineChar):
@@ -204,7 +223,7 @@ def is_symbol(lineChar):
     return False
 
 # Get the complete number once 
-def get_whole_number(line, partNumber,charIndex):
+def get_whole_number(line, partNumber,charIndex, starCoords):
     step = 1
     for charIndex in range(charIndex, len(line)):
         if charIndex + 1 == len(line):
@@ -214,18 +233,36 @@ def get_whole_number(line, partNumber,charIndex):
             partNumber += line[charIndex+1]
             step += 1
         else:
-            numbers.append(partNumber)
+            numbers.append([partNumber, starCoords])
             return step
         
 def sum_string_ints(numbers):
     total = 0
     for value in numbers:
+        count = 0
         try:
             # Attempt to convert the string to an integer and add to the total
-            total += int(value)
+            for compare in numbers:
+                if len(value[1]) == 0:
+                    break
+                if value[0] == compare[0]:
+                    test = 1
+                if value[1] == compare[1] and value[0] != compare[0]:
+                    count += 1
+                    total1 = int(value[0]) * int(compare[0])
+            if count == 1:
+                total += total1    
+            if count > 1:
+                test = 1          
+   
         except ValueError:
             # Handle the case where the string cannot be converted to an integer
             print(f"Skipping non-integer value: {value}")
 
     return total
+
+def is_star(lineChar):
+    if lineChar == '*':
+        return True
+    return False
             
