@@ -1,5 +1,5 @@
 from variables import *
 
-almanach = Almanac(input)
-result = almanach.minLoc
+almanach = Race(input)
+result = almanach.getWays()
 print(result)
