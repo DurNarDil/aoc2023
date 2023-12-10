@@ -1,5 +1,5 @@
 from variables import *
 
 almanach = Almanac(input)
-result = almanach.processRanges()
+result = almanach.minLoc
 print(result)
