@@ -2,9 +2,10 @@ from variables import *
 
 lineList = input.split("\n")
 lineListLenght = len(lineList)
-digitSum = 0
+points = 0
 for index,line in enumerate(lineList):
-      process_string(line, lineList, index, lineListLenght)
+      card = Card(line)
+      points += card.points
     
-print(sum_string_ints(numbers))
+print(points)
                 
