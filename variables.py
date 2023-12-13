@@ -225,7 +225,7 @@ class Almanac:
         self.seeds = split.split()
         for i in range(int(len(self.seeds)/2)):
             for k in range(int(self.seeds[i +1])):
-                currentSeed = int(self.seeds[i]) + k
+                currentSeed = int(self.seeds[2*i]) + k
                 self.processRanges(currentSeed)
         return self.minLoc
     def getValues(self, section: int) -> list:
